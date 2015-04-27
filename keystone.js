@@ -53,8 +53,87 @@ keystone.set('routes', require('./routes'));
 // Configure the navigation bar in Keystone's Admin UI
 
 keystone.set('nav', {
-	'users': 'users'
+	'用户': 'users'
 });
+
+
+var mongoose = keystone.mongoose;
+
+
+    console.log('-------------------------' + keystone.get('mongo'));
+
+mongoose.connection.on('connecting', function() {
+    console.log('--------->>>>>>>>>>>>connecting...');
+});
+mongoose.connection.once('open', function() {
+    console.log('--------->>>>>>>>>>>> opened!' + keystone.get('mongo'));
+});
+mongoose.connection.on('reconnected', function () {
+    console.log('--------->>>>>>>>>>>> reconnected!');
+});
+
+mongoose.connection.on('connected', function () {
+  console.log('------->>>>>connected ');
+});
+ 
+// If the connection throws an error
+mongoose.connection.on('error',function (err) {
+
+  console.log('------->>>>> error: ' + err);
+
+  console.log('------->>>>==============> err.name: before  ' + err.name);
+	err.name = 'ValidationError';
+	 console.log('------->>>>==============> err.name: after ' + err.name);
+
+  // mongoose.connection.close();
+  // mongoose.connect(keystone.get('mongo'));
+  console.log(",,,,,,,,,,,,,.,.......................... EventEmitter.listenerCount(emitter, event)   before == " + require('events').EventEmitter.listenerCount(mongoose.connection, 'error'));
+
+	mongoose.connection.removeAllListeners('error');
+
+	mongoose.connection.on('error',function (err) {
+
+  console.log('------->>>>> error: ' + err);
+
+  console.log('------->>>>==============> err.name: before  ' + err.name);
+	err.name = 'ValidationError';
+	 console.log('------->>>>==============> err.name: after ' + err.name);
+	});
+console.log(",,,,,,,,,,,,,.,.......................... EventEmitter.listenerCount(emitter, event) after remove all == " + require('events').EventEmitter.listenerCount(mongoose.connection, 'error'));
+
+});
+
+// console.log("xxxx" + mongoose.connection.setMaxListeners)
+console.log(",,,,,,,,,,,,,.,.......................... EventEmitter.listenerCount(emitter, event)" + require('events').EventEmitter.listenerCount(mongoose.connection, 'error'));
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function () {
+  console.log('------->>>>> disconnected');
+  //mongoose.connect(config.mongo.uri, config.mongo.options);
+  // mongoose.connect(keystone.get('mongo'));
+});
+
+mongoose.connection.on('close', function () {
+  console.log('------->>>>> close!!!!!!!!');
+  //mongoose.connect(config.mongo.uri, config.mongo.options);
+  mongoose.connect(keystone.get('mongo'));
+
+});
+
+
+process.on('uncaughtException', function(err) {
+  console.log('Caught exception:============================= ...');
+});
+
+
+var domain = require('domain'),
+d = domain.create();
+
+d.on('error', function(err) {
+  console.log('-----===================================stop explose ......................................');
+  // console.error(err);
+});
+
+d.add(keystone);
 
 // Start Keystone to connect to your database and initialise the web server
 

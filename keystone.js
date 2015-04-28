@@ -53,6 +53,9 @@ keystone.set('routes', require('./routes'));
 // Configure the navigation bar in Keystone's Admin UI
 
 keystone.set('nav', {
+	'课程': '1.papaclass',
+	'社区': '2.community',
+	'活动': '3.activity',
 	'用户': 'users'
 });
 

@@ -17,7 +17,7 @@ var PapaClass = new keystone.List('PapaClass', {
 
 PapaClass.add({
 	title: { type: String, required: true },
-	image: { type: String, required: true },
+	image: { type: String },
 	participators: { type: Types.TextArray },
 	blog: { type: String},
 	state: { type: Types.Select, options: 'draft, published, archived', default: 'draft', index: true },

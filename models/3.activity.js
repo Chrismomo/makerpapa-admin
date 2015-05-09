@@ -17,6 +17,7 @@ var Activity = new keystone.List('Activity', {
 
 Activity.add({
 	title: { type: String, required: true },
+	desc: { type: String},
 	image: { type: String },
 	participators: { type: Types.TextArray },
 	blog: { type: String},
